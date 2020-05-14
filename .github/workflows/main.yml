@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-x86_64:
+    name: Docker Build (x86_64)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: DockerHub Login
+        run: docker login -u ${{ secrets.DOCKER_USER }} --password-stdin <<< ${{ secrets.DOCKER_TOKEN }}
+      - name: DockerHub Build
+        run: docker build . --tag ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_IMAGE }}:latest
+      - name: DockerHub Push
+        run: docker push ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_IMAGE }}:latest
+  
